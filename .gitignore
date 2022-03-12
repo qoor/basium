@@ -1,0 +1,20 @@
+.clangd
+/.clangd/
+/.clangd-index/
+# Settings directories for eclipse
+/.externalToolBuilders/
+/.settings/
+/.vs/
+# Visual Studio Code
+.vscode/
+.vscode-server/
+
+/out/
+
+# Ignore IntelliJ files.
+.idea/
+
+# Ignore cache folder created by clangd
+.cache/
+
+compile_commands.json
