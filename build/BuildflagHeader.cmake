@@ -10,7 +10,7 @@
 # the proper header isn't included, meaning the answer will always be silently
 # false or might vary across the code base.
 #
-# In the CMake macro, specify build flags in the macro as a list
+# In the CMake function, specify build flags in the function as a list
 # of strings that encode key/value pairs like this:
 #
 #   buildflag_header(... FLAGS ENABLE_FOO=1 ENABLE_BAR=${enable_bar})
@@ -71,9 +71,11 @@
 #
 #       # This will expand to the quoted C string when used in source code.
 #       SPAM_SERVER_URL=\"http://www.example.com/\")
-macro(buildflag_header TARGET_NAME)
-  cmake_path(RELATIVE_PATH PROJECT_SOURCE_DIR BASE_DIRECTORY ${PROJECT_BINARY_DIR} OUTPUT_VARIABLE SCRIPT_DIR)
-  cmake_path(APPEND SCRIPT_DIR "build")
+
+cmake_minimum_required(VERSION 3.17)
+
+function(buildflag_header TARGET_NAME)
+  cmake_path(RELATIVE_PATH CMAKE_CURRENT_FUNCTION_LIST_DIR BASE_DIRECTORY ${PROJECT_BINARY_DIR} OUTPUT_VARIABLE SCRIPT_DIR)
   set(ONE_VALUES HEADER HEADER_DIR)
   set(MULTIPLE_VALUES FLAGS DEPENDS)
   cmake_parse_arguments(ARGS "" "${ONE_VALUES}" "${MULTIPLE_VALUES}" ${ARGN})
@@ -82,17 +84,17 @@ macro(buildflag_header TARGET_NAME)
 
   # Compute the path from the root to this file.
   if(NOT ARGS_HEADER_DIR)
-    file(RELATIVE_PATH ARGS_HEADER_DIR ${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+    cmake_path(RELATIVE_PATH CMAKE_CURRENT_SOURCE_DIR BASE_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE ARGS_HEADER_DIR)
   endif()
 
-  set(HEADER_FILE "${ARGS_HEADER_DIR}/${ARGS_HEADER}")
+  cmake_path(APPEND ARGS_HEADER_DIR ${ARGS_HEADER} OUTPUT_VARIABLE HEADER_FILE)
 
-  cmake_path(RELATIVE_PATH CMAKE_CURRENT_BINARY_DIR BASE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_VARIABLE RESPONSE_FILE)
-  cmake_path(APPEND RESPONSE_FILE "${TARGET_NAME}.rsp")
-  file(WRITE ${RESPONSE_FILE} "--flags\n${ARGS_FLAGS}")
+  set(RESPONSE_FILE "${TARGET_NAME}.rsp")
+  cmake_path(APPEND CMAKE_CURRENT_BINARY_DIR ${RESPONSE_FILE} OUTPUT_VARIABLE RESPONSE_FILE_REAL_PATH)
+  file(WRITE ${RESPONSE_FILE_REAL_PATH} "--flags\n${ARGS_FLAGS}")
 
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${HEADER_FILE} COMMAND python3 ${SCRIPT_DIR}/write_buildflag_header.py --output ${HEADER_FILE} --gen-dir \"\" --rulename ${TARGET_NAME} --definitions ${RESPONSE_FILE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${HEADER_FILE} COMMAND python3 ${SCRIPT_DIR}/write_buildflag_header.py --output ${HEADER_FILE} --gen-dir \"\" --rulename ${TARGET_NAME} --definitions ${ARGS_HEADER_DIR}/${RESPONSE_FILE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
   add_custom_target(${TARGET_NAME} ALL DEPENDS ${CMAKE_BINARY_DIR}/${HEADER_FILE} ${ARGS_DEPENDS})
 
   add_dependencies(${TARGET_NAME} buildflag_header_h)
-endmacro()
+endfunction()
