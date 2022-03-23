@@ -63,9 +63,9 @@ def GetOptions():
     value = flag[equals_index + 1:]
 
     # Canonicalize and validate the value.
-    if value == 'true':
+    if value == 'true' or value == 'ON':
       value = '1'
-    elif value == 'false':
+    elif value == 'false' or value == 'OFF':
       value = '0'
     flags.append((key, str(value)))
 
