@@ -21,4 +21,8 @@ set(BASIUM_COMMON_INCLUDE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR})
 
+include(build/config/buildconfig.cmake)
+
 add_subdirectory(build)
+add_subdirectory(third_party)
+add_subdirectory(base)
