@@ -1,4 +1,5 @@
 include(config/chromeos/args.cmake)
+include(config/chromeos/ui_mode.cmake)
 
 add_custom_target(buildflag_header_h DEPENDS buildflag.h)
 
@@ -11,5 +12,7 @@ buildflag_header(chromeos_buildflags
   FLAGS
   IS_CHROMEOS_DEVICE=${CHROMEOS_DEVICE}
 
+  IS_CHROMEOS_LACROS=${CHROMEOS_LACROS}
+  IS_CHROMEOS_ASH=${CHROMEOS_ASH}
   IS_CHROMEOS_WITH_HW_DETAILS=${CHROMEOS_WITH_HW_DETAILS}
-  IS_REVEN=${IS_REVEN})
+  IS_REVEN=${REVEN})
