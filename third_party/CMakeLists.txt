@@ -3,3 +3,4 @@ if(NOT TARGET absl::base)
 endif()
 
 add_subdirectory(googletest)
+add_subdirectory(openssl)
