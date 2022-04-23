@@ -1,3 +1,13 @@
+# Copyright 2022 MaBling <akck0918@gmail.com>. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  set(CLANG ON)
+else()
+  set(CLANG OFF)
+endif()
+
 set(CHROMEOS OFF)
 set(LINUX OFF)
 set(MAC OFF)
