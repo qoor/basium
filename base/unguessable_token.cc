@@ -11,7 +11,7 @@
 #include "build/build_config.h"
 
 #if !BUILDFLAG(IS_NACL)
-#include "third_party/boringssl/src/include/openssl/mem.h"
+#include "third_party/openssl/src/include/openssl/crypto.h"
 #endif
 
 namespace base {

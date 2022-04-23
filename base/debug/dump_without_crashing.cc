@@ -7,6 +7,7 @@
 #include "base/check.h"
 #include "base/metrics/histogram_functions.h"
 #include "base/no_destructor.h"
+#include "base/synchronization/lock.h"
 #include "base/trace_event/base_tracing.h"
 
 namespace {
@@ -104,7 +105,7 @@ bool DumpWithoutCrashingWithUniqueId(size_t unique_identifier,
   return false;
 }
 
-void SetDumpWithoutCrashingFunction(void (CDECL *function)()) {
+void SetDumpWithoutCrashingFunction(void(CDECL* function)()) {
 #if !defined(COMPONENT_BUILD)
   // In component builds, the same base is shared between modules
   // so might be initialized several times. However in non-

@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-#include "third_party/boringssl/src/include/openssl/md5.h"
+#include "third_party/openssl/src/include/openssl/md5.h"
 
 namespace base {
 

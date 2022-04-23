@@ -19,7 +19,7 @@
 #include "base/numerics/checked_math.h"
 #include "base/numerics/safe_conversions.h"
 #include "base/strings/sys_string_conversions.h"
-#include "build/branding_buildflags.h"
+// #include "build/branding_buildflags.h"
 #include "build/build_config.h"
 
 #if !BUILDFLAG(IS_IOS)
@@ -237,11 +237,12 @@ const char* BaseBundleID() {
     return base_bundle_id;
   }
 
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-  return "com.google.Chrome";
-#else
-  return "org.chromium.Chromium";
-#endif
+  return "";
+// #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+//   return "com.google.Chrome";
+// #else
+//   return "org.chromium.Chromium";
+// #endif
 }
 
 void SetBaseBundleID(const char* new_base_bundle_id) {
