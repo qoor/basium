@@ -1,3 +1,7 @@
+# Copyright 2022 MaBling <akck0918@gmail.com>. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
 include(${PROJECT_SOURCE_DIR}/build/config/sanitizers/sanitizers.cmake)
 
 if(ASAN OR HWASAN OR LSAN OR TSAN OR MSAN)
