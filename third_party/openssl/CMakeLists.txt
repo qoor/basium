@@ -27,24 +27,29 @@ ExternalProject_Add(
   GIT_TAG origin/openssl-3.0
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}
   SOURCE_DIR ${openssl_SOURCE_DIR}
-  BINARY_DIR <PREFIX>
+  BINARY_DIR src
   INSTALL_DIR ${CMAKE_BINARY_DIR}
   UPDATE_DISCONNECTED ON
   CONFIGURE_HANDLED_BY_BUILD ON
   CONFIGURE_COMMAND ${CONFIGURE_COMMAND} --prefix=<INSTALL_DIR>
   BUILD_COMMAND ${BUILD_COMMAND}
   INSTALL_COMMAND ${INSTALL_COMMAND}
-  BUILD_ALWAYS ON)
+  BUILD_ALWAYS ON
+  LOG_INSTALL OFF)
 
-set(openssl_INCLUDE_DIR ${openssl_SOURCE_DIR}/include)
-set(openssl_LIBRARY_DIR ${CMAKE_BINARY_DIR}/lib)
+set(openssl_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/include ${openssl_SOURCE_DIR}/include)
+set(openssl_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/src)
 
-add_library(crypto SHARED IMPORTED)
-add_library(crypto_static STATIC IMPORTED)
+add_library(crypto SHARED IMPORTED GLOBAL)
+add_library(crypto_static STATIC IMPORTED GLOBAL)
 set_target_properties(crypto PROPERTIES IMPORTED_LOCATION ${openssl_LIBRARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}crypto${CMAKE_SHARED_LIBRARY_SUFFIX})
 set_target_properties(crypto_static PROPERTIES IMPORTED_LOCATION ${openssl_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}crypto${CMAKE_STATIC_LIBRARY_SUFFIX})
+target_include_directories(crypto INTERFACE ${openssl_INCLUDE_DIR})
+target_include_directories(crypto_static INTERFACE ${openssl_INCLUDE_DIR})
 
-add_library(ssl SHARED IMPORTED)
-add_library(ssl_static STATIC IMPORTED)
+add_library(ssl SHARED IMPORTED GLOBAL)
+add_library(ssl_static STATIC IMPORTED GLOBAL)
 set_target_properties(ssl PROPERTIES IMPORTED_LOCATION ${openssl_LIBRARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}ssl${CMAKE_SHARED_LIBRARY_SUFFIX})
 set_target_properties(ssl_static PROPERTIES IMPORTED_LOCATION ${openssl_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}ssl${CMAKE_STATIC_LIBRARY_SUFFIX})
+target_include_directories(ssl INTERFACE ${openssl_INCLUDE_DIR})
+target_include_directories(ssl_static INTERFACE ${openssl_INCLUDE_DIR})
