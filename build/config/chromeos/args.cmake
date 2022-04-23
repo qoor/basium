@@ -1,3 +1,3 @@
-option(CHROMEOS_DEVICE "Target machine is ChromeOS device" OFF)
-option(CHROMEOS_WITH_HW_DETAILS "Collect hardware details from ChromeOS" OFF)
-option(REVEN "Use Reven build" OFF)
+set(CHROMEOS_DEVICE OFF)
+set(CHROMEOS_WITH_HW_DETAILS OFF)
+set(REVEN OFF)
