@@ -1,0 +1,26 @@
+set(ASAN OFF)
+set(HWASAN OFF)
+set(LSAN OFF)
+set(MSAN OFF)
+set(TSAN OFF)
+set(UBSAN OFF)
+set(UBSAN_NO_RECOVER OFF)
+set(UBSAN_NULL OFF)
+
+if(LINUX AND NOT CHROMEOS AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND FALSE) # target_os == "linux" && !is_chromeos && target_cpu == "x64" && is_official_build
+  set(CFI ON)
+else()
+  set(CFI OFF)
+endif()
+set(CFI_CAST OFF)
+if(LINUX AND NOT CHROMEOS AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND FALSE) # target_os == "linux" && !is_chromeos && target_cpu == "x64" && is_official_build
+  set(CFI_ICALL ON)
+else()
+  set(CFI_ICALL OFF)
+endif()
+set(CFI_DIAG OFF)
+set(CFI_RECOVER OFF)
+
+if(HWASAN AND (NOT ANDROID OR NOT CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64"))
+  message(FATAL_ERROR "HWASan only supported on Android ARM64 builds.")
+endif()

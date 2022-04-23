@@ -1,0 +1,36 @@
+include(${PROJECT_SOURCE_DIR}/build/config/chromeos/args.cmake)
+include(${PROJECT_SOURCE_DIR}/build/config/chromeos/ui_mode.cmake)
+
+if(WIN32 OR LINUX OR CHROMEOS OR FUCHSIA)
+  set(USE_AURA ON)
+else()
+  set(USE_AURA OFF)
+endif()
+
+if(MAC OR WIN32 OR LINUX OR CHROMEOS OR FUCHSIA)
+  set(TOOLKIT_VIEWS ON)
+else()
+  set(TOOLKIT_VIEWS OFF)
+endif()
+
+if(LINUX AND NOT ANDROID)
+  set(USE_GLIB ON)
+else()
+  set(USE_GLIB OFF)
+endif()
+
+if(USE_GLIB AND NOT LINUX)
+  message(FATAL_ERROR "glib only can use in Linux")
+endif()
+
+if(LINUX AND USE_GLIB)
+  set(USE_ATK ON)
+else()
+  set(USE_ATK OFF)
+endif()
+
+if(LINUX OR (CHROMEOS_LACROS AND NOT CHROMEOS_DEVICE))
+  set(USE_XVFB_IN_THIS_CONFIG ON)
+else()
+  set(USE_XVFB_IN_THIS_CONFIG OFF)
+endif()
