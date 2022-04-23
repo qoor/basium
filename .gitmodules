@@ -3,4 +3,4 @@
 	url = https://github.com/abseil/abseil-cpp.git
 [submodule "third_party/icu"]
 	path = third_party/icu
-	url = https://chromium.googlesource.com/chromium/deps/icu
+	url = https://github.com/qoor/icu.git
