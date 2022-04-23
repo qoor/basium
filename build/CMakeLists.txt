@@ -5,9 +5,6 @@ include(config/chromecast_build.cmake)
 
 add_library(buildflag_header_h INTERFACE buildflag.h)
 
-add_library(basium_build INTERFACE build_config.h buildflag.h)
-target_include_directories(basium_build INTERFACE ${BASIUM_COMMON_INCLUDE_DIR})
-
 buildflag_header(chromeos_buildflags
   HEADER "chromeos_buildflags.h"
   FLAGS
