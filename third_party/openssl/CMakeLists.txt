@@ -19,6 +19,15 @@ else()
 endif()
 
 set(openssl_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(openssl_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/include ${openssl_SOURCE_DIR}/include)
+set(openssl_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/src)
+
+set(CRYPTO_SHARED_LIBRARY_PATH ${openssl_LIBRARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}crypto${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(CRYPTO_STATIC_LIBRARY_PATH ${openssl_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}crypto${CMAKE_STATIC_LIBRARY_SUFFIX})
+set(SSL_SHARED_LIBRARY_PATH ${openssl_LIBRARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}ssl${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(SSL_STATIC_LIBRARY_PATH ${openssl_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}ssl${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+file(MAKE_DIRECTORY ${openssl_INCLUDE_DIR})
 
 include(ExternalProject)
 ExternalProject_Add(
@@ -35,21 +44,27 @@ ExternalProject_Add(
   BUILD_COMMAND ${BUILD_COMMAND}
   INSTALL_COMMAND ${INSTALL_COMMAND}
   BUILD_ALWAYS ON
+  BUILD_BYPRODUCTS
+  ${CRYPTO_SHARED_LIBRARY_PATH}
+  ${CRYPTO_STATIC_LIBRARY_PATH}
+  ${SSL_SHARED_LIBRARY_PATH}
+  ${SSL_STATIC_LIBRARY_PATH}
   LOG_INSTALL OFF)
-
-set(openssl_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/include ${openssl_SOURCE_DIR}/include)
-set(openssl_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/src)
 
 add_library(crypto SHARED IMPORTED GLOBAL)
 add_library(crypto_static STATIC IMPORTED GLOBAL)
-set_target_properties(crypto PROPERTIES IMPORTED_LOCATION ${openssl_LIBRARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}crypto${CMAKE_SHARED_LIBRARY_SUFFIX})
-set_target_properties(crypto_static PROPERTIES IMPORTED_LOCATION ${openssl_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}crypto${CMAKE_STATIC_LIBRARY_SUFFIX})
+set_target_properties(crypto PROPERTIES IMPORTED_LOCATION ${CRYPTO_SHARED_LIBRARY_PATH})
+set_target_properties(crypto_static PROPERTIES IMPORTED_LOCATION ${CRYPTO_STATIC_LIBRARY_PATH})
 target_include_directories(crypto INTERFACE ${openssl_INCLUDE_DIR})
 target_include_directories(crypto_static INTERFACE ${openssl_INCLUDE_DIR})
+add_dependencies(crypto openssl)
+add_dependencies(crypto_static openssl)
 
 add_library(ssl SHARED IMPORTED GLOBAL)
 add_library(ssl_static STATIC IMPORTED GLOBAL)
-set_target_properties(ssl PROPERTIES IMPORTED_LOCATION ${openssl_LIBRARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}ssl${CMAKE_SHARED_LIBRARY_SUFFIX})
-set_target_properties(ssl_static PROPERTIES IMPORTED_LOCATION ${openssl_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}ssl${CMAKE_STATIC_LIBRARY_SUFFIX})
+set_target_properties(ssl PROPERTIES IMPORTED_LOCATION ${SSL_SHARED_LIBRARY_PATH})
+set_target_properties(ssl_static PROPERTIES IMPORTED_LOCATION ${SSL_STATIC_LIBRARY_PATH})
 target_include_directories(ssl INTERFACE ${openssl_INCLUDE_DIR})
 target_include_directories(ssl_static INTERFACE ${openssl_INCLUDE_DIR})
+add_dependencies(ssl openssl)
+add_dependencies(ssl_static openssl)
