@@ -25,15 +25,28 @@ add_subdirectory(numerics)
 add_subdirectory(third_party/double_conversion)
 add_subdirectory(third_party/dynamic_annotations)
 
+set(BUILD_RUST_JSON_PARSER OFF)
+
+buildflag_header(parsing_buildflags
+  HEADER "parsing_buildflags.h"
+  FLAGS BUILD_RUST_JSON_PARSER=${BUILD_RUST_JSON_PARSER}
+)
+
 buildflag_header(ios_cronet_buildflags
   HEADER "ios_cronet_buildflags.h"
   HEADER_DIR "base/message_loop"
   FLAGS CRONET_BUILD=${CRONET_BUILD})
 
-if(NOT WIN32 AND NOT MAC)
+if(NOT FUCHSIA AND NOT WIN32 AND NOT MAC AND NOT NACL)
   set(DEP_LIBEVENT ON)
 else()
   set(DEP_LIBEVENT OFF)
+endif()
+
+if(DEP_LIBEVENT AND NOT IOS)
+  set(USE_LIBEVENT ON)
+else()
+  set(USE_LIBEVENT OFF)
 endif()
 
 set(SOURCES
@@ -1232,9 +1245,7 @@ set(PUBLIC_DEPS
   ios_cronet_buildflags
   logging_buildflags
   sanitizer_buildflags
-  tracing_buildflags
-  basium_base_numerics
-  absl::base)
+  tracing_buildflags)
 
 if(USE_ALLOCATOR_SHIM)
   list(APPEND SOURCES
@@ -1881,7 +1892,7 @@ if(IOS)
 endif()
 
 if(DEP_LIBEVENT)
-  list(APPEND DEPS libevent)
+  list(APPEND LIBS libevent)
 endif()
 
 if(USE_LIBEVENT)
@@ -1904,7 +1915,7 @@ if(UNIX AND NOT APPLE)
     list(APPEND SOURCES
       time/time_exploded_icu.cc)
 
-    list(APPEND DEPS icui18n icuuc)
+    list(APPEND LIBS icui18n icuuc)
   endif()
 endif()
 
